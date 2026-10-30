@@ -1,0 +1,159 @@
+/* =====================================================================
+   CAOS NAS RUAS — visual tecnológico (neon) e responsivo
+   Retrato (celular em pé): painéis em cima e embaixo.
+   Paisagem (celular deitado, tablet, computador): painéis nas laterais.
+   ===================================================================== */
+:root{
+  --bg:#050a18;
+  --bg2:#0a1330;
+  --cy:#19d3ff;
+  --cy-g:rgba(25,211,255,.55);
+  --rd:#ff3b5c;
+  --rd-g:rgba(255,59,92,.55);
+  --txt:#e8f4ff;
+  --mut:#8aa3c7;
+  --glass:rgba(12,22,52,.72);
+  --line:rgba(120,170,255,.22);
+  --disp:"Orbitron","Rajdhani","Segoe UI",system-ui,sans-serif;
+  --body:"Rajdhani","Segoe UI",system-ui,sans-serif;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);overscroll-behavior:none;touch-action:manipulation}
+body{font-family:var(--body);color:var(--txt);font-weight:700}
+button{font-family:inherit}
+
+/* ---------- Layout geral: a estrada ocupa a tela toda ---------- */
+.app{
+  position:fixed;left:0;top:0;width:100%;height:100vh;height:100dvh;overflow:hidden;
+  background:
+    radial-gradient(60vmax 60vmax at 15% 0%,rgba(25,211,255,.12),transparent 60%),
+    radial-gradient(60vmax 60vmax at 90% 100%,rgba(255,59,92,.12),transparent 60%),
+    linear-gradient(var(--line) 1px,transparent 1px) 0 0/44px 44px,
+    linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/44px 44px,
+    var(--bg);
+}
+.stage{position:absolute;inset:0;overflow:hidden;touch-action:none;cursor:pointer}
+#road{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* Placar */
+.score{
+  position:absolute;z-index:4;pointer-events:none;
+  display:flex;align-items:center;gap:10px;padding:6px 14px;border-radius:14px;
+  background:var(--glass);border:1px solid var(--c);backdrop-filter:blur(6px);box-shadow:0 0 16px var(--cg);
+}
+.score.blue{--c:var(--cy);--cg:rgba(25,211,255,.3);color:var(--cy);top:calc(10px + env(safe-area-inset-top));left:calc(10px + env(safe-area-inset-left))}
+.score.red{--c:var(--rd);--cg:rgba(255,59,92,.3);color:var(--rd);top:calc(10px + env(safe-area-inset-top));right:calc(10px + env(safe-area-inset-right))}
+.score small{font-size:clamp(11px,2.2vmin,15px);letter-spacing:.24em;opacity:.85}
+.score b{font-family:var(--disp);font-weight:900;font-size:clamp(24px,5.5vmin,40px);line-height:1;text-shadow:0 0 12px currentColor}
+.score em{
+  display:none;font-style:normal;font-family:var(--disp);font-size:clamp(9px,1.8vmin,12px);letter-spacing:.2em;color:#fff;
+  padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35)
+}
+.app[data-mode="host"] #youBlue,.app[data-mode="guest"] #youRed{display:inline-block}
+
+.hud{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;
+  pointer-events:none;text-align:center;z-index:5;padding:3vmin;
+}
+.hud .big,.hud .txt{
+  font-family:var(--disp);font-weight:900;color:#fff;margin:0;
+  text-shadow:0 0 12px var(--cy),0 0 32px var(--cy),0 0 2px #000;
+}
+.hud .big{font-size:clamp(64px,22vmin,200px);line-height:1}
+.hud .txt{font-size:clamp(24px,7vmin,64px);line-height:1.1}
+.hud .msg{color:#fff;text-shadow:0 0 8px #000;margin:0;max-width:min(88vw,480px);font-size:clamp(14px,2.6vmin,19px)}
+.hud .mbtn{pointer-events:auto}
+
+.tools{position:absolute;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:6}
+.tool{
+  width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--glass);
+  color:var(--txt);font-size:18px;line-height:1;cursor:pointer;backdrop-filter:blur(6px);
+}
+.tool:hover{border-color:#fff}
+.keys{
+  position:absolute;left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom));text-align:center;font-size:14px;letter-spacing:.14em;color:var(--mut);
+  pointer-events:none;z-index:3;display:none;
+}
+@media (hover:hover) and (pointer:fine){.keys.show{display:block}}
+
+/* ---------- Telas (menu, sala...) ---------- */
+.screen{
+  position:absolute;inset:0;z-index:20;display:none;overflow:auto;padding:16px;
+  background:
+    radial-gradient(70vmax 50vmax at 50% 0%,rgba(25,211,255,.16),transparent 60%),
+    linear-gradient(var(--line) 1px,transparent 1px) 0 0/44px 44px,
+    linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/44px 44px,
+    rgba(5,10,24,.96);
+}
+.screen.show{display:flex}
+.card{
+  margin:auto;width:min(92vw,440px);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;
+  padding:26px 22px;border-radius:22px;background:var(--glass);border:1px solid var(--line);
+  box-shadow:0 0 0 1px rgba(25,211,255,.08),0 20px 60px rgba(0,0,0,.5),0 0 40px rgba(25,211,255,.1);
+  backdrop-filter:blur(10px);
+}
+.logo{display:flex;flex-direction:column;font-family:var(--disp);font-weight:900;line-height:1;letter-spacing:.06em}
+.logo span:first-child{font-size:clamp(40px,12vw,64px);color:var(--cy);text-shadow:0 0 18px var(--cy-g),0 0 2px #fff}
+.logo span:last-child{font-size:clamp(26px,8vw,42px);color:var(--rd);text-shadow:0 0 18px var(--rd-g),0 0 2px #fff}
+.sub{font-family:var(--disp);font-weight:800;font-size:clamp(22px,6vw,30px);margin:0;color:#fff;text-shadow:0 0 14px var(--cy-g)}
+.msg{margin:0;font-size:17px;line-height:1.35;color:var(--txt);font-weight:500}
+.msg.small{font-size:14px;color:var(--mut)}
+.msg.err{display:none;padding:8px 12px;border-radius:12px;background:rgba(255,59,92,.16);border:1px solid var(--rd);color:#ffd0d8}
+.msg.err.show{display:block}
+
+.mbtn{
+  width:100%;padding:15px 18px;font-family:var(--disp);font-weight:800;font-size:16px;letter-spacing:.08em;
+  color:var(--txt);cursor:pointer;border-radius:14px;
+  background:linear-gradient(180deg,rgba(25,211,255,.18),rgba(25,211,255,.06));
+  border:1px solid var(--cy);box-shadow:0 0 16px rgba(25,211,255,.25),inset 0 0 14px rgba(25,211,255,.1);
+  transition:transform .06s ease,box-shadow .15s ease;
+}
+.mbtn:hover{box-shadow:0 0 26px rgba(25,211,255,.5),inset 0 0 16px rgba(25,211,255,.18)}
+.mbtn:active{transform:scale(.97)}
+.mbtn.hot{
+  background:linear-gradient(180deg,rgba(255,59,92,.34),rgba(255,59,92,.1));border-color:var(--rd);
+  box-shadow:0 0 18px rgba(255,59,92,.35),inset 0 0 14px rgba(255,59,92,.15);
+}
+.mbtn.hot:hover{box-shadow:0 0 30px rgba(255,59,92,.6),inset 0 0 16px rgba(255,59,92,.22)}
+.mbtn.ghost{background:transparent;border-color:var(--line);box-shadow:none;color:var(--mut);font-size:14px}
+.mbtn:focus-visible,.tool:focus-visible,.code-in:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+.or{display:flex;align-items:center;gap:10px;width:100%;color:var(--mut);font-size:14px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.code-in{
+  width:100%;font-family:var(--disp);font-weight:900;font-size:30px;text-align:center;letter-spacing:.35em;text-indent:.35em;
+  text-transform:uppercase;padding:12px;color:#fff;background:rgba(0,0,0,.35);outline:none;
+  border:1px solid var(--line);border-radius:14px;-webkit-user-select:text;user-select:text;
+}
+.code-in::placeholder{color:#4d6288;letter-spacing:.12em;font-size:16px}
+.code-in:focus{border-color:var(--cy);box-shadow:0 0 18px var(--cy-g)}
+
+.room-code{
+  font-family:var(--disp);font-weight:900;font-size:clamp(40px,13vw,60px);letter-spacing:.2em;text-indent:.2em;color:#fff;
+  padding:8px 18px;border-radius:16px;background:rgba(0,0,0,.4);border:1px solid var(--cy);
+  text-shadow:0 0 16px var(--cy);box-shadow:0 0 22px rgba(25,211,255,.3);
+}
+.slots{display:flex;flex-direction:column;gap:8px;width:100%}
+.slot{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;text-align:left;font-size:17px;
+  background:rgba(0,0,0,.3);border:1px solid var(--line);
+}
+.slot i{width:12px;height:12px;border-radius:50%;flex:none}
+.slot.blue i{background:var(--cy);box-shadow:0 0 10px var(--cy)}
+.slot.red i{background:var(--rd);box-shadow:0 0 10px var(--rd)}
+.slot.wait{opacity:.6}
+
+/* Telas baixas (celular deitado): compacta os menus */
+@media (max-height:520px){
+  .card{padding:14px 16px;gap:8px}
+  .mbtn{padding:10px 14px}
+  .msg.small{display:none}
+  .code-in{font-size:22px;padding:8px}
+  .room-code{font-size:36px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rbtn,.mbtn{transition:none}
+}
